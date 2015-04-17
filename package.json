@@ -1,0 +1,25 @@
+{
+  "name": "atom-swiss-knife",
+  "main": "./lib/index",
+  "version": "0.0.0",
+  "description": "My swiss knife for atom projects",
+  "activationCommands": {
+    "atom-workspace": [
+      "atom-swiss-knife:toggle",
+      "core:save",
+      "core:save-as"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vzaccaria/atom-swiss-knife.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "atom": ">=0.174.0 <2.0.0"
+  },
+  "dependencies": {
+    "emissary": "^1.3.3",
+    "lodash": "^3.6.0"
+  }
+}
