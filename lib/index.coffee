@@ -6,7 +6,11 @@ uid = require('uid')
 os = require('os')
 shelljs = require('shelljs')
 
-packageName = "atom-swiss-knife"
+debug = require('debug')
+debug.enable("sk:*")
+debug.log = console.log.bind(console)
+debug = debug("sk:index")
+
 language = "source.gfm"
 
 { execStdIn, registerOnSave } = require('./utils')
@@ -18,12 +22,16 @@ doIt = parseWithCmdThroughStdin(cmd, language)
 plugin = module.exports
 
 plugin.config =
-    _package_name: packageName
 
     # Only if you want it to process after save && language enabled.
     onSave:    { type: 'boolean', default: true, description: "Format on save" }
 
+plugin.name = "atom-swiss-knife"
+
 plugin.activate = (state) ->
+
+
+  debug("Activating")
 
   # Remember to add an entry to keymap.cson for each command
   registerCommand("toggle", (=> @toggle()), plugin)

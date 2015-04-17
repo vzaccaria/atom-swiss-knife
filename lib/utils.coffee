@@ -5,18 +5,23 @@ promise = require('bluebird')
 uid = require('uid')
 os = require('os')
 shelljs = require('shelljs')
+debug = require('debug')('sk:utils')
+
 
 execStdIn = (cmd, stdin) ->
   dname = os.tmpdir()
   filename = "#{dname}/#{uid(8)}"
   stdin.to("#{filename}.in")
-  console.log stdin
+  debug stdin
   command = "< #{filename}.in #{cmd} > #{filename}.out"
-  console.log command
+  debug command
   return new promise (resolve, reject) ->
     shelljs.exec command, (code, output) ->
       if code == 0
-        resolve(shelljs.cat("#{filename}.out"))
+        content = shelljs.cat("#{filename}.out")
+        shelljs.rm("-f", "#{filename}.in")
+        shelljs.rm("-f", "#{filename}.out")
+        resolve(content)
       else
         console.error(output)
         reject(code)
@@ -29,19 +34,21 @@ parseWithCmdThroughStdin = (cmd, language) ->
 
 registerOnSave = (doIt, plugin) ->
 
+  debug("Registering plugin")
+
   onSave = () ->
-    if atom.config.get("#{plugin._package_name}.onSave")
+    if atom.config.get("#{plugin.name}.onSave")
       doIt(atom.workspace.activePaneItem)
 
   Subscriber.extend(plugin)
 
   atom.workspace.eachEditor (editor) ->
     buffer = editor.getBuffer()
-    plugin.unsubscribe(buffer)
-    plugin.subscribe(buffer, 'saved', _.debounce(onSave, 50))
+    buffer.onWillSave onSave
 
 registerCommand = (name, doIt, plugin) ->
-  atom.commands.add('atom-workspace', "#{plugin._package_name}:#{name}", doit)
+  atom.commands.add('atom-workspace', "#{plugin.name}:#{name}", doIt)
+
 
 
 module.exports = {
