@@ -1,17 +1,20 @@
-# {%= name %} {%= badge("fury") %}
+{%= name %} {%= badge("fury") %}
+================================
 
 {%= include("install-global") %}
 
 {%= partial("description.md") %}
 
-## Author
+Author
+------
 
-* Vittorio Zaccaria
+-   Vittorio Zaccaria
 
-## License
-{%= copyright() %}
-{%= license() %}
+License
+-------
 
-***
+{%= copyright() %} {%= license() %}
+
+------------------------------------------------------------------------
 
 {%= include("footer") %}

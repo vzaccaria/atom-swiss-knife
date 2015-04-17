@@ -13,7 +13,7 @@ execStdIn = (cmd, stdin) ->
   filename = "#{dname}/#{uid(8)}"
   stdin.to("#{filename}.in")
   debug stdin
-  command = "< #{filename}.in #{cmd} > #{filename}.out"
+  command = "< #{filename}.in #{cmd} | sed -e :a -e '/^\\n*$/{$d;N;};/\\n$/ba' > #{filename}.out"
   debug command
   return new promise (resolve, reject) ->
     shelljs.exec command, (code, output) ->
@@ -28,6 +28,7 @@ execStdIn = (cmd, stdin) ->
 
 parseWithCmdThroughStdin = (cmd, language) ->
   return (editor) ->
+    debug("Parsing #{language}")
     if editor.getGrammar()?.scopeName is language
       execStdIn(cmd, editor.getText()).then (newText) ->
         editor.setText(newText)

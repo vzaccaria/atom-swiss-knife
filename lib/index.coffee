@@ -11,13 +11,17 @@ debug.enable("sk:*")
 debug.log = console.log.bind(console)
 debug = debug("sk:index")
 
-language = "source.gfm"
 
 { execStdIn, registerOnSave } = require('./utils')
 { parseWithCmdThroughStdin, registerCommand } = require('./utils')
 
-cmd = "pandoc  --read markdown --write markdown-simple_tables+pipe_tables-fenced_code_blocks-fenced_code_attributes"
-doIt = parseWithCmdThroughStdin(cmd, language)
+markdown = "source.gfm"
+pandoc = "pandoc  --read markdown --write markdown-simple_tables+pipe_tables-fenced_code_blocks-fenced_code_attributes"
+doMarkdown = parseWithCmdThroughStdin(pandoc, markdown)
+
+octave = "source.matlab"
+octaveBeautifier = "octave-beautifier"
+doMatlab = parseWithCmdThroughStdin(octaveBeautifier, octave)
 
 plugin = module.exports
 
@@ -37,9 +41,10 @@ plugin.activate = (state) ->
   registerCommand("toggle", (=> @toggle()), plugin)
 
   # Only if you want it to process after save && language enabled.
-  registerOnSave(doIt, plugin)
+  registerOnSave(doMarkdown, plugin)
+  registerOnSave(doMatlab, plugin)
 
 plugin.deactivate = ->
 
 plugin.toggle = ->
-  doIt(atom.workspace.activePaneItem)
+  doMarkdown(atom.workspace.activePaneItem)
